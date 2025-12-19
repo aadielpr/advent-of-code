@@ -9,18 +9,20 @@ struct Coordinate {
   int y;
 };
 
+enum Direction { NORTH = '^', EAST = '>', SOUTH = 'v', WEST = '<' };
+
 void move(struct Coordinate *c, char dir) {
   switch (dir) {
-  case '^':
+  case NORTH:
     c->y++;
     break;
-  case '>':
+  case EAST:
     c->x++;
     break;
-  case 'v':
+  case SOUTH:
     c->y--;
     break;
-  case '<':
+  case WEST:
     c->x--;
     break;
   }
