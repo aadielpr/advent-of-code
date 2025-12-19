@@ -4,37 +4,56 @@
 
 #define MAX_SIZE 20000
 
-int main() {
-  int visited_house_count = 1;
-  struct House {
-    int x;
-    int y;
-  };
+struct Coordinate {
+  int x;
+  int y;
+};
 
-  struct House p = {.x = 0, .y = 0};
-  struct House visited[MAX_SIZE] = {p};
-  char move;
+void move(struct Coordinate *c, char dir) {
+  switch (dir) {
+  case '^':
+    c->y++;
+    break;
+  case '>':
+    c->x++;
+    break;
+  case 'v':
+    c->y--;
+    break;
+  case '<':
+    c->x--;
+    break;
+  }
+}
 
-  while (scanf(" %c", &move) == 1) {
-    switch (move) {
-      case '^': p.y++; break;
-      case '>': p.x++; break;
-      case 'v': p.y--; break;
-      case '<': p.x--; break;
-    }
-
-    bool visit = false;
-    for (int j = 0; j < visited_house_count; j++) {
-      if (visited[j].x == p.x && visited[j].y == p.y) {
-        visit = true;
-      }
-    }
-
-    if (!visit) {
-      visited[visited_house_count] = p;
-      visited_house_count++;
+bool visited(struct Coordinate houses[], int count, int x, int y) {
+  for (int j = 0; j < count; j++) {
+    if (houses[j].x == x && houses[j].y == y) {
+      return true;
     }
   }
+  return false;
+}
 
-  printf("visited house: %d\n", visited_house_count);
+int main() {
+  int count = 1;
+  struct Coordinate real_santa = {.x = 0, .y = 0};
+  struct Coordinate robo_santa = {.x = 0, .y = 0};
+  struct Coordinate houses[MAX_SIZE] = {real_santa};
+  char dir;
+  bool turn = false;
+
+  while (scanf(" %c", &dir) == 1) {
+    struct Coordinate *current_santa = turn ? &real_santa : &robo_santa;
+    move(current_santa, dir);
+
+    if (!visited(houses, count, current_santa->x, current_santa->y)) {
+      houses[count] = *current_santa;
+      count++;
+    }
+
+    turn = !turn;
+  }
+
+  printf("visited house: %d\n", count);
 }
